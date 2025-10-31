@@ -1,0 +1,39 @@
+/* Minimal reset */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body,#app{height:100%}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#071021;color:#e6f0ff;display:flex;align-items:center;justify-content:center;padding:20px}
+
+/* Screen container */
+.screen{display:none;max-width:900px;width:100%;padding:20px;border-radius:10px;background:rgba(255,255,255,0.02);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.screen.active{display:block}
+
+/* Loading area */
+.loading-content{display:flex;flex-direction:column;align-items:center;gap:12px}
+.glitch-text{font-weight:700;text-transform:uppercase;letter-spacing:1px}
+
+/* Loading bar (also supports the typo class-="loading-fill") */
+.loading-bar{width:80%;max-width:640px;height:12px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
+.loading-fill,[class-="loading-fill"]{height:100%;width:0;transition:width .35s linear;background:linear-gradient(90deg,#5ac8ff,#7b61ff)}
+
+/* Terminal / hack screen */
+.terminal{background:#051018;padding:16px;border-radius:8px}
+.terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.terminal-title{font-weight:700;color:#ffb4b4}
+button{cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+
+/* Warning boxes */
+.warning-boxes{display:flex;flex-direction:column;gap:8px}
+.warning-box{padding:10px;border-radius:8px;background:rgba(255,50,50,0.04);border:1px solid rgba(255,50,50,0.06)}
+@keyframes mini-blink{0%,100%{opacity:1}50%{opacity:.55}}
+.warning-box.blink{animation:mini-blink 1.4s infinite}
+
+/* Progress */
+.progress-container{display:flex;gap:12px;align-items:center;margin-top:12px}
+.progress-bar{flex:1;height:12px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+.progress-fill,#hack-progress{height:100%;width:0;transition:width .3s linear;background:linear-gradient(90deg,#ffd36b,#ff6b6b)}
+
+/* Reveal */
+.reveal-content{text-align:center}
+.reveal-title{font-size:28px;margin-bottom:6px}
+.reveal-button{background:linear-gradient(90deg,#7b61ff,#5ac8ff);border:none;color:#041225;padding:10px 14px;font-weight:700;border-radius:8px}
+@media(max-width:600px){.loading-bar{width:95%}}
