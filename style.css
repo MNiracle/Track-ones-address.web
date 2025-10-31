@@ -1,86 +1,192 @@
-/* Minimal reset */
+/* system-override: matrix / terminal realistic style
+   Replace your existing style.css with this file.
+*/
+
+/* --- Reset & base --- */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body,#app{height:100%}
-body{
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:#05070b;color:#e9f5ff;
-  display:flex;align-items:center;justify-content:center;padding:20px;
+:root{
+  --bg-1:#030405;
+  --bg-2:#051014;
+  --matrix-green:#58ff6a;
+  --muted:#a6f6b6;
+  --warn:#ff7b7b;
+  --accent:#33ffe0;
 }
 
-/* container & screens */
+/* full-screen centered container with subtle scanlines */
+body{
+  font-family:"Roboto Mono", "SFMono-Regular", ui-monospace, Menlo, Monaco, "Courier New", monospace;
+  background:
+    linear-gradient(180deg,var(--bg-1),var(--bg-2)) fixed;
+  color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:28px;
+  overflow:hidden;
+}
+
+/* faint animated scanlines for realism */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image: linear-gradient(rgba(255,255,255,0.01) 1px, rgba(0,0,0,0) 1px);
+  background-size: 100% 4px;
+  pointer-events:none;
+  mix-blend-mode:overlay;
+  opacity:0.6;
+  animation:scan 6s linear infinite;
+}
+@keyframes scan{0%{transform:translateY(-2%)}100%{transform:translateY(2%)}}
+
+/* main card */
 #app{width:100%;max-width:980px}
-.screen{display:none;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:12px;box-shadow:0 10px 30px rgba(3,7,14,0.7)}
+.screen{
+  display:none;
+  padding:20px;
+  border-radius:10px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.18));
+  border:1px solid rgba(0,255,128,0.03);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.65), 0 2px 12px rgba(0,255,140,0.02) inset;
+  backdrop-filter: blur(4px);
+  position:relative;
+  overflow:hidden;
+}
 .screen.active{display:block}
 
-/* --- Glitch header --- */
-.glitch-text{font-weight:800;letter-spacing:1.5px;text-transform:uppercase;position:relative}
+/* green glow vignette */
+.screen::after{
+  content:"";
+  position:absolute;inset:-40%;
+  pointer-events:none;
+  background: radial-gradient(circle at 10% 10%, rgba(88,255,106,0.03) 0%, rgba(88,255,106,0.01) 25%, transparent 40%);
+  mix-blend-mode:screen;
+}
+
+/* GLITCH heading */
+.glitch-text{
+  font-weight:900;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  color:var(--matrix-green);
+  font-size:18px;
+  position:relative;
+}
 .glitch-text::before,
 .glitch-text::after{
-  content: attr(data-text);
-  position:absolute;left:0;top:0;width:100%;pointer-events:none;opacity:.65;
+  content:attr(data-text);
+  position:absolute;left:0;top:0;width:100%;
+  pointer-events:none;opacity:0.6;
+  mix-blend-mode:screen;
 }
-.glitch-text::before{color:#ff4d6d;transform:translateX(4px);mix-blend-mode:screen;clip-path:inset(0 0 60% 0);animation:gl1 2.6s infinite linear}
-.glitch-text::after {color:#45e0ff;transform:translateX(-4px);mix-blend-mode:screen;clip-path:inset(60% 0 0 0);animation:gl2 3s infinite linear}
-@keyframes gl1{0%{transform:translateX(4px)}50%{transform:translateX(0)}100%{transform:translateX(4px)}}
-@keyframes gl2{0%{transform:translateX(-4px)}50%{transform:translateX(0)}100%{transform:translateX(-4px)}}
+.glitch-text::before{color:#48ff7a;transform:translateX(3px);clip-path:inset(0 0 65% 0);animation:gl1 2.4s infinite linear}
+.glitch-text::after{color:#1be0b5;transform:translateX(-3px);clip-path:inset(65% 0 0 0);animation:gl2 2.9s infinite linear}
+@keyframes gl1{0%{transform:translateX(3px)}50%{transform:translateX(0)}100%{transform:translateX(3px)}}
+@keyframes gl2{0%{transform:translateX(-3px)}50%{transform:translateX(0)}100%{transform:translateX(-3px)}}
 
-/* --- Loading bar --- */
+/* Loading area */
 .loading-content{display:flex;flex-direction:column;align-items:center;gap:12px}
-.loading-bar{width:80%;max-width:640px;height:14px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
-.loading-fill,[class-="loading-fill"]{height:100%;width:0;transition:width .35s linear;background:linear-gradient(90deg,#6ae0ff,#7b61ff);box-shadow:inset 0 6px 18px rgba(123,97,255,0.14)}
-
-/* small status text */
-.loading-status{font-size:13px;color:#bcd7ff;opacity:.95}
-
-/* --- Terminal / hacking area --- */
-.terminal{background:#07111a;padding:16px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
-.terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.terminal-title{font-weight:800;color:#ffb4b4;letter-spacing:1px}
-
-/* buttons */
-button{cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-weight:700}
-button:hover{transform:translateY(-2px);transition:transform .18s}
-
-/* --- Warning boxes with emojis --- */
-.warning-boxes{display:flex;flex-direction:column;gap:10px}
-.warning-box{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,50,50,0.03), rgba(255,255,255,0.01));border:1px solid rgba(255,50,50,0.06);color:#ffd6d6}
-.warning-box::before{
-  content:"⚠️"; /* main emoji for warnings */
-  font-size:20px;margin-right:6px;
-  display:inline-block;
-  transform:translateY(-1px);
+.loading-status{font-size:13px;color:rgba(166,246,182,0.9)}
+.loading-bar{width:84%;max-width:720px;height:14px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;border:1px solid rgba(88,255,106,0.03)}
+.loading-fill,[class-="loading-fill"]{
+  height:100%;width:0;transition:width .28s linear;
+  background: linear-gradient(90deg,#3aff6a 0%, #7bffb8 40%, #00ffd1 100%);
+  box-shadow: 0 6px 22px rgba(0,255,128,0.06) inset;
+  filter: drop-shadow(0 6px 18px rgba(0,255,128,0.06));
 }
-.warning-box .warning-text{font-size:14px;line-height:1.2}
 
-/* more urgent variation (use inline class .urgent or keep blink) */
-.warning-box.urgent{background:linear-gradient(90deg, rgba(255,90,90,0.06), rgba(255,255,255,0.01));box-shadow:0 8px 30px rgba(255,60,60,0.03)}
+/* Terminal style */
+.terminal{
+  background: linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.16));
+  padding:14px;border-radius:8px;border:1px solid rgba(88,255,106,0.03);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+.terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+.terminal-title{font-weight:800;color:var(--warn);letter-spacing:0.8px}
+button{
+  cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);
+  background:transparent;color:var(--muted);font-weight:700;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.5)}
 
-/* blinking to draw attention */
-@keyframes mini-blink{0%,100%{opacity:1}50%{opacity:.55}}
-.warning-box.blink{animation:mini-blink 1.4s infinite}
+/* Warning boxes: emoji per child + neon feel */
+.warning-boxes{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.warning-box{
+  display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;
+  background:linear-gradient(90deg, rgba(0,0,0,0.28), rgba(0,0,0,0.12));
+  border:1px solid rgba(255,255,255,0.02);
+  color:var(--muted); font-size:14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+}
 
-/* --- Progress area --- */
+/* per-box emoji for realism */
+.warning-box:nth-child(1)::before{content:"📡";font-size:20px}
+.warning-box:nth-child(2)::before{content:"💳";font-size:20px}
+.warning-box:nth-child(3)::before{content:"📍";font-size:20px}
+.warning-box:nth-child(4)::before{content:"🎥";font-size:20px}
+.warning-box::before{display:inline-block;margin-right:6px;transform:translateY(-1px)}
+
+/* urgent visual */
+.warning-box.urgent{border-color:rgba(255,120,120,0.12); box-shadow:0 10px 40px rgba(255,80,80,0.04)}
+
+/* blinking & pulsate for realism */
+@keyframes attentionPulse{0%{transform:translateY(0);opacity:1}50%{transform:translateY(1px);opacity:.6}100%{transform:translateY(0);opacity:1}}
+.warning-box.blink{animation:attentionPulse 1.4s infinite ease-in-out}
+
+/* Terminal log: mono look & cursor */
+.terminal-log{
+  font-family:inherit; font-size:13px; color:var(--matrix-green); line-height:1.35;
+  background: rgba(0,0,0,0.28); padding:10px; border-radius:6px; max-height:220px; overflow:auto;
+  border:1px solid rgba(88,255,106,0.03);
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.6);
+}
+
+/* typed line and blinking caret */
+.log-line{white-space:pre-wrap}
+.log-line::after{
+  content:"█";
+  display:inline-block;margin-left:6px;color:var(--matrix-green);opacity:0.9;
+  animation:caret 1s steps(1) infinite;
+}
+@keyframes caret{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
+
+/* progress container */
 .progress-container{display:flex;align-items:center;gap:12px;margin-top:10px}
-.progress-label{font-size:12px;color:#cfe6ff;opacity:.85;width:180px}
-.progress-bar{flex:1;height:12px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
-.progress-fill,#hack-progress{height:100%;width:0;transition:width .28s linear;background:linear-gradient(90deg,#ffd36b,#ff6b6b)}
+.progress-label{font-size:12px;color:var(--muted);opacity:.9;width:180px}
+.progress-bar{flex:1;height:12px;background:rgba(255,255,255,0.02);border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.15)}
+.progress-fill,#hack-progress{height:100%;width:0;transition:width .28s linear;background:linear-gradient(90deg,#50ff7a,#a3ffb8);box-shadow:inset 0 6px 18px rgba(0,255,128,0.06)}
 
-/* progress percentage */
-.progress-text{width:48px;text-align:right;font-weight:800;color:#fff}
+/* reveal screen: dramatic */
+.reveal-content{text-align:center;padding:16px}
+.reveal-emoji::before{content:"😈";font-size:46px;display:block;margin-bottom:8px;filter:drop-shadow(0 8px 18px rgba(255,0,0,0.06))}
+.reveal-title{font-size:34px;color:var(--matrix-green);margin-bottom:6px}
+.reveal-subtitle{font-size:14px;color:var(--muted);margin-bottom:10px}
+.hacker-name{font-weight:900;color:var(--warn);letter-spacing:.8px;text-transform:uppercase}
 
-/* --- Reveal / prank finish --- */
-.reveal-content{text-align:center;padding:18px}
-.reveal-emoji::before{content:"😈";font-size:44px;display:block;margin-bottom:6px}
-.reveal-title{font-size:34px;color:#e8f8ff;margin-bottom:6px}
-.reveal-subtitle{font-size:15px;color:#c7e6ff;margin-bottom:8px}
-.hacker-name{font-weight:900;color:#ffb4b4;letter-spacing:.8px}
+/* reveal button with neon edge */
+.reveal-button{
+  background:linear-gradient(90deg,#0f0,#8bffb2);
+  border:none;color:#02110b;padding:10px 14px;font-weight:800;border-radius:8px;
+  box-shadow:0 10px 40px rgba(0,255,128,0.06), 0 2px 6px rgba(0,0,0,0.5);
+}
+.reveal-button::after{content:" 🔁";font-size:14px}
 
-/* reveal button with emoji */
-.reveal-button::after{content:" 🔁";font-size:14px;margin-left:6px}
+/* subtle screen flicker effect for realism on demand */
+@keyframes screenFlicker{
+  0%{opacity:1}
+  8%{opacity:.92}
+  10%{opacity:1}
+  12%{opacity:.95}
+  16%{opacity:1}
+  100%{opacity:1}
+}
+/* apply flicker to terminal occasionally via JS by toggling .flicker */
+.screen.flicker{animation:screenFlicker .8s linear 1}
 
-/* responsive tweaks */
-@media(max-width:640px){
+/* responsive */
+@media(max-width:680px){
   .loading-bar{width:95%}
   .progress-label{display:none}
-  .terminal-header{flex-direction:column;align-items:flex-start;gap:8px}
+  .terminal-log{max-height:160px}
+  .glitch-text{font-size:15px}
 }
